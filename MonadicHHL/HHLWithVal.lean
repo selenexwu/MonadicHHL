@@ -54,6 +54,9 @@ lemma relWith_congr {α β : Type _}
   (p : HHL.elemType M α) (p' : HHL.elemType M β) :
   HHL.relWith C1 p p' ↔ HHL.relWith C2 p p'
   := by
+    -- suffices C1 = C2 by rw[this]
+    -- funext
+    -- apply h
     cases hv : getVal p
     {
       have h := inactive_congr p C1 C2 p'
@@ -72,6 +75,10 @@ lemma simplify_if_ok_relWith {α β : Type _}
   ↔ if b v then HHL.relWith C₁ σ σ' else HHL.relWith C₂ σ σ'
 := by
   have h := active_congr _ _ h (fun x ↦ if b x then C₁ x else C₂ x)
+  -- cases hbv : b v <;>
+  -- { simp
+  --   apply h
+  --   simp [hbv] }
   aesop
 
 -- set_option linter.style.setOption false

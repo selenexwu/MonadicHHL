@@ -5,7 +5,7 @@ import MonadicHHL.Instances.Id
 def optionify {α β : Type _} {m : Type _ → Type _} [Monad m]
   (f : α → m (Option β)) : Option α → m (Option β)
   | some a => f a
-  | none   => pure n
+  | none   => pure none
 
 open HHL
 ------------ OptionT ---------------

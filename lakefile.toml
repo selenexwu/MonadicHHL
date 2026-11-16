@@ -18,10 +18,10 @@ inputRev = "v4.24.0"
 [[lean_lib]]
 name = "MonadicHHL"
 
-[[require]]
-name = "smt"
-scope = "ufmg-smite"
-rev = "main"
+# [[require]]
+# name = "smt"
+# scope = "ufmg-smite"
+# rev = "main"
 
 #[[require]]
 #name = "batteries"
@@ -33,7 +33,7 @@ rev = "main"
 #scope = "leanprover-community"
 #rev = "main"
 
-[[require]]
-name = "auto"
-git = "https://github.com/leanprover-community/lean-auto.git"
-rev = "v4.24.0-hammer"
+# [[require]]
+# name = "auto"
+# git = "https://github.com/leanprover-community/lean-auto.git"
+# rev = "v4.24.0-hammer"

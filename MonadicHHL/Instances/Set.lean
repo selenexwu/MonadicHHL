@@ -2,7 +2,7 @@ import MonadicHHL.HHLMonads
 import MonadicHHL.HHLWithVal
 
 -- import Mathlib.Logic.Function.Basic
--- import Mathlib.Order.CompleteBooleanAlgebra
+import Mathlib.Order.CompleteBooleanAlgebra
 -- import Mathlib.Order.Lattice
 -- import Mathlib.Order.Basic
 
@@ -37,11 +37,19 @@ instance : LawfulMonad Set where
       simp [Bind.bind, Set.bind]
       apply Set.ext
       aesop
-  seqLeft_eq := sorry
-  seqRight_eq := sorry
-  pure_seq := sorry
-  bind_map := sorry
-
+  seqLeft_eq := 
+    by
+      simp [SeqLeft.seqLeft, Set.pure, Set.bind, Functor.map, Seq.seq]
+  seqRight_eq := 
+    by
+      simp [SeqRight.seqRight, Set.bind, Functor.map, Seq.seq]
+  pure_seq := 
+    by
+      simp [Functor.map, Seq.seq, Set.bind, Pure.pure, Set.pure, Set.image]
+  bind_map := 
+    by
+      simp [Functor.map, Seq.seq, Bind.bind, Set.bind, Set.image]
+  
 def nonterminating : Set Int := do
   while true do
     return 1

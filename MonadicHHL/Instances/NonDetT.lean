@@ -32,13 +32,13 @@ instance {m : Type _ → Type _} : Monad (NonDetT m) where
 
 instance {m : Type _ → Type _} [Monad m] [LawfulMonad m] : LawfulMonad (NonDetT m) := by
   refine LawfulMonad.mk' _ ?_ ?_ ?_
-  { introv; induction x
+  · introv; induction x
     <;> simp [Functor.map, NonDetT.bind]
-    <;> solve_by_elim [funext] }
-  { introv; simp [bind, NonDetT.bind] }
-  introv; induction x
-  <;> simp [bind, NonDetT.bind]
-  <;> solve_by_elim [funext]
+    <;> solve_by_elim [funext] 
+  · introv; simp [bind, NonDetT.bind] 
+  · introv; induction x
+    <;> simp [bind, NonDetT.bind]
+    <;> solve_by_elim [funext]
 
 end NonDeterministicTransformer
 

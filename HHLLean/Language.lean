@@ -117,7 +117,7 @@ lemma sem_branch {α : Type} (C₁ C₂ : Stmt α) (S : Set (State α)) :
   apply funext
   grind
 
-@[grind .]
+@[grind]
 lemma sem_mono {α : Type} (C : Stmt α) {S₁ S₂ : Set (State α)} :
     S₁ ⊆ S₂ → sem C S₁ ⊆ sem C S₂ :=
   by
@@ -169,7 +169,7 @@ lemma sem_iter_one {α : Type} (C : Stmt α) (S : Set (State α)) (n : ℕ) :
     have h : (sem C)^[n] (sem C S) = sem C ((sem C)^[n] S) := by
       exact Function.iterate_succ_apply' (sem C) n S
     rw [h]
-    apply subsetI
+    rw [Set.subset_def]
     intro σ' hin
     apply in_semI
     have hex := in_semE hin

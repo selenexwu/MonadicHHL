@@ -1,5 +1,7 @@
-import Mathlib.Logic.Function.Basic
-import Mathlib.Order.CompleteBooleanAlgebra
+import Mathlib.Data.Set.Basic
+import Aesop
+-- import Mathlib.Logic.Function.Basic
+-- import Mathlib.Order.CompleteBooleanAlgebra
 -- import Mathlib.Order.Lattice
 -- import Mathlib.Order.Basic
 
@@ -29,7 +31,6 @@ section
 namespace HHL
 
 variable {M : Type _ → Type _} [Monad M] [HHL M]
-
 
 def semify {α₁ α₂ : Type}
   (C : α₁ → M α₂) : Set (elemType M α₁) → Set (elemType M α₂) :=
