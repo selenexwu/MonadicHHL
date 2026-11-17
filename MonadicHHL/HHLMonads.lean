@@ -18,6 +18,7 @@ lemma prove_prop_by_eq {α : Type _} {x y : α}
 
 class HHL (M : Type _ → Type _) [Monad M] where
   elemType (α : Type _) : Type _
+  [elemTypeFunctor : Functor elemType]
   relWith : {α β : Type _} → (α → M β) → elemType α → elemType β → Prop
   bind_rel
     {α₀ α₁ α₂ : Type _}
@@ -25,6 +26,8 @@ class HHL (M : Type _ → Type _) [Monad M] where
     (p₀ : elemType α₀) (p₂ : elemType α₂) :
       relWith (fun v₁ ↦ bind (C₁ v₁) C₂) p₀ p₂
       ↔ ∃ p₁, relWith C₁ p₀ p₁ ∧ relWith C₂ p₁ p₂
+
+instance (m : Type → Type) [Monad m] [HHL m] : Functor (HHL.elemType m) := HHL.elemTypeFunctor
 
 section
 

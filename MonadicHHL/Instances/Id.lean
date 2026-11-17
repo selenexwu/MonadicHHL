@@ -8,7 +8,6 @@ instance : HHL Id where
     aesop
 
 instance : HHLWithValLawful Id where
-  mapElem f := f
   getVal := some
   coerce σ h := by contradiction
   -- getVal_mapElem f σ := rfl

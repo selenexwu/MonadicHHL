@@ -7,9 +7,14 @@ open HHL
 open HHLWithVal
 open HHLWithValLawful
 
+def StateT.elemType (σ : Type) (m : Type → Type) [Monad m] [HHL m] (α : Type) :=
+  HHL.elemType m (α × σ)
+
+instance (σ : Type) (m : Type → Type) [Monad m] [HHL m] : Functor (StateT.elemType σ m) where
+  map f := Functor.map (f := HHL.elemType m) (fun (a,s) ↦ (f a, s))
+
 instance (σ : Type) (m : Type → Type) [Monad m] [HHL m] : HHL (StateT σ m) where
-  elemType α := elemType m (α × σ)
-  --elemType α := elemType m α × σ
+  elemType := StateT.elemType σ m
   relWith {α β : Type} (C : α → StateT σ m β)
     (p : elemType m (α × σ)) (p' : elemType m (β × σ)) :=
     relWith (fun v ↦ C v.1 v.2) p p'
@@ -21,7 +26,7 @@ instance (σ : Type) (m : Type → Type) [Monad m] [HHL m] : HHL (StateT σ m) w
 
 variable (σ : Type)
 -- #check (HHL.relWith (M := StateT σ Set))
-#synth HHL (StateT σ Set)
+-- #synth HHL (StateT σ Set)
 
 lemma test_stateT_set1 (σ α : Type _) :
   elemType (StateT σ Set) α = (α × σ) := by
@@ -34,7 +39,6 @@ lemma test_stateT_set2 {σ α : Type}
 
 instance {σ : Type _} (M : Type _ → Type _) [Monad M] [HHLWithVal M]
   : HHLWithVal (StateT σ M) where
-  mapElem f p := mapElem (fun p => (f p.1, p.2)) p
   getVal σ := Option.map Prod.fst (getVal (M := M) σ)
   coerce {α β : Type _} (σ : HHL.elemType (M := M) (α × σ)) h :=
     coerce (M := M) σ (by aesop)

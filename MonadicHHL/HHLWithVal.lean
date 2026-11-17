@@ -6,15 +6,13 @@ import MonadicHHL.HHLMonads
 class HHLWithVal (M : Type _ → Type _) [Monad M] extends HHL M where
 
   getVal {α : Type _} (σ : HHL.elemType M α) : Option α
-  mapElem {α β : Type _} (f : α → β) : HHL.elemType M α → HHL.elemType M β
+  -- mapElem {α β : Type _} (f : α → β) : HHL.elemType M α → HHL.elemType M β
   coerce {α β : Type _} (σ : HHL.elemType M α) (h : (getVal σ).isNone) : HHL.elemType M β
 
 class HHLWithValLawful (M : Type _ → Type _) [Monad M] extends HHLWithVal M where
   -- Properties
-  /-
-  getVal_mapElem {α β : Type _} (f : α → β) (σ : HHL.elemType M α) :
-    getVal (mapElem f σ) = Option.map f (getVal σ)
-  -/
+  -- getVal_mapElem {α β : Type _} (f : α → β) (σ : HHL.elemType M α) :
+  --   getVal (Functor.map f σ) = Option.map f (getVal σ)
   -- mapElem behaves like a map, we could have more properties, but unsure if needed
   -- Let's see what other properties we need
   -- Why do we even need this one?
