@@ -6,6 +6,8 @@ instance : HHL Id where
   relWith f p p' := p' = f p
   bind_rel := by
     aesop
+  pure_rel := by
+    aesop
 
 instance : HHLWithValLawful Id where
   getVal := some

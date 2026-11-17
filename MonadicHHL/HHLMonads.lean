@@ -19,6 +19,7 @@ lemma prove_prop_by_eq {α : Type _} {x y : α}
 class HHL (M : Type _ → Type _) [Monad M] where
   elemType (α : Type _) : Type _
   [elemTypeFunctor : Functor elemType]
+  [elemTypeLawful : LawfulFunctor elemType]
   relWith : {α β : Type _} → (α → M β) → elemType α → elemType β → Prop
   bind_rel
     {α₀ α₁ α₂ : Type _}
@@ -26,14 +27,27 @@ class HHL (M : Type _ → Type _) [Monad M] where
     (p₀ : elemType α₀) (p₂ : elemType α₂) :
       relWith (fun v₁ ↦ bind (C₁ v₁) C₂) p₀ p₂
       ↔ ∃ p₁, relWith C₁ p₀ p₁ ∧ relWith C₂ p₁ p₂
+  pure_rel
+    {α₀ α₁ : Type _}
+    (f : α₀ → α₁)
+    (p₀ : elemType α₀) (p₁ : elemType α₁) :
+      relWith (fun x ↦ pure (f x)) p₀ p₁ 
+      ↔ Functor.map f p₀ = p₁
 
-instance (m : Type → Type) [Monad m] [HHL m] : Functor (HHL.elemType m) := HHL.elemTypeFunctor
+attribute [instance] HHL.elemTypeFunctor HHL.elemTypeLawful
 
 section
 
 namespace HHL
 
 variable {M : Type _ → Type _} [Monad M] [HHL M]
+
+lemma pure_rel_const {α₀ α₁ : Type _}
+  (v : α₁) (p₀ : elemType M α₀) (p₁ : elemType M α₁) :
+  relWith (fun _ ↦ pure v) p₀ p₁ 
+  ↔ Functor.mapConst v p₀ = p₁ := by
+  simp [LawfulFunctor.map_const]
+  apply pure_rel
 
 def semify {α₁ α₂ : Type}
   (C : α₁ → M α₂) : Set (elemType M α₁) → Set (elemType M α₂) :=
@@ -136,6 +150,30 @@ lemma WP_cons {α β : Type _}
     intros h
     simp [WP, semify]
     aesop
+
+lemma WP_pure {α β : Type} {M : Type → Type} [Monad M] [HHL M]
+(Q : hyperassertion (M := M) β)
+(f : α → β)
+: WP (fun x ↦ pure (f x)) Q = (fun S ↦ Q ((fun (s : elemType M α) ↦ Functor.map f s) '' S)) := by
+  funext S
+  simp [WP,semify,Set.image]
+  apply prove_prop_by_eq
+  apply Set.ext
+  intro p'
+  simp
+  apply exists_congr
+  intro a
+  apply and_congr_right
+  intro ha
+  apply pure_rel
+
+lemma WP_pure_const {α β : Type} {M : Type → Type} [Monad M] [HHL M]
+(Q : hyperassertion (M := M) β)
+(b : β)
+: WP (fun _ ↦ pure b) Q = (fun S ↦ Q ((fun (s : elemType M α) ↦ Functor.mapConst b s) '' S)) := by
+  simp [LawfulFunctor.map_const]
+  apply WP_pure
+
 
 abbrev H.and {α : Type _} (P Q : hyperassertion (M := M) α) : hyperassertion (M := M) α
 := fun S => P S ∧ Q S

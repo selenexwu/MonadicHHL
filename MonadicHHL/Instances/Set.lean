@@ -60,3 +60,6 @@ instance : HHL Set where
   relWith C p p' := p' ∈ C p
   bind_rel := by
     aesop
+  pure_rel := by 
+    simp [pure,Set.pure]
+    aesop

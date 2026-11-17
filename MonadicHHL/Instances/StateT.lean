@@ -12,6 +12,11 @@ def StateT.elemType (σ : Type) (m : Type → Type) [Monad m] [HHL m] (α : Type
 
 instance (σ : Type) (m : Type → Type) [Monad m] [HHL m] : Functor (StateT.elemType σ m) where
   map f := Functor.map (f := HHL.elemType m) (fun (a,s) ↦ (f a, s))
+  
+instance (σ : Type) (m : Type → Type) [Monad m] [HHL m] : LawfulFunctor (StateT.elemType σ m) where
+  map_const := by aesop
+  id_map := by simp [Functor.map]
+  comp_map := by simp [Functor.map]
 
 instance (σ : Type) (m : Type → Type) [Monad m] [HHL m] : HHL (StateT σ m) where
   elemType := StateT.elemType σ m
@@ -20,9 +25,10 @@ instance (σ : Type) (m : Type → Type) [Monad m] [HHL m] : HHL (StateT σ m) w
     relWith (fun v ↦ C v.1 v.2) p p'
   bind_rel := by
     intro α₀ α₁ α₂ C₁ C₂ p₀ p₂
-    rename_i HHL_M HHL_m
-    apply HHL_m.bind_rel (fun v₁ ↦ C₁ v₁.1 v₁.2) (fun v₂ ↦ C₂ v₂.1 v₂.2) p₀ p₂
-
+    apply bind_rel
+  pure_rel := by
+    intro α₀ α₁ f p₀ p₁
+    apply pure_rel
 
 variable (σ : Type)
 -- #check (HHL.relWith (M := StateT σ Set))
